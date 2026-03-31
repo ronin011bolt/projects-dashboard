@@ -5,7 +5,7 @@
       "name": "Confirmado",
       "status": "planning",
       "updatedAt": "2026-03-31",
-      "summary": "Initial placeholder project for dashboard structure.",
+      "summary": "Project entry for journalism and verification work.",
       "tags": ["journalism", "verification"],
       "activities": [
         {
@@ -18,15 +18,60 @@
     {
       "id": "vector-critico",
       "name": "Vector Crítico",
-      "status": "backlog",
-      "updatedAt": "2026-03-31",
-      "summary": "Example project entry for future editorial or research tracking.",
-      "tags": ["newsletter", "editorial"],
+      "status": "active",
+      "updatedAt": "2026-04-01",
+      "summary": "Editorial project linked to the Vector Crítico ecosystem and related tooling.",
+      "tags": ["newsletter", "editorial", "website"],
       "activities": [
         {
-          "date": "2026-03-31",
-          "title": "Placeholder added",
-          "note": "Created as a second example to test project separation."
+          "date": "2026-04-01",
+          "title": "Project confirmed",
+          "note": "Tracked as an active project with its own ecosystem and related repos."
+        }
+      ]
+    },
+    {
+      "id": "monetization-tool",
+      "name": "Monetization Tool",
+      "status": "active",
+      "updatedAt": "2026-04-01",
+      "summary": "Project for the Vector Crítico monetization tool deployed at mt.vectorcritico.com.",
+      "tags": ["tooling", "product", "website"],
+      "activities": [
+        {
+          "date": "2026-04-01",
+          "title": "Project added",
+          "note": "Added from Chief's list of active projects with live site and GitHub repo reference."
+        }
+      ]
+    },
+    {
+      "id": "cartas-a-desconocidos",
+      "name": "Cartas a Desconocidos",
+      "status": "active",
+      "updatedAt": "2026-04-01",
+      "summary": "Website and project tracked separately at cartasadesconocidos.com.",
+      "tags": ["website", "editorial", "project"],
+      "activities": [
+        {
+          "date": "2026-04-01",
+          "title": "Project added",
+          "note": "Added as a separate active project with website and GitHub repo reference."
+        }
+      ]
+    },
+    {
+      "id": "pulso-digital-theme",
+      "name": "Pulso Digital Theme",
+      "status": "active",
+      "updatedAt": "2026-04-01",
+      "summary": "Shared theme project used in vectorcritico.com and tracked as its own asset/repo.",
+      "tags": ["theme", "design", "shared-asset"],
+      "activities": [
+        {
+          "date": "2026-04-01",
+          "title": "Theme project added",
+          "note": "Tracked as a separate project because it is a reusable asset with its own repository."
         }
       ]
     }
