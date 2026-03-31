@@ -19,7 +19,7 @@
     .badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--accent);font-size:12px}
     input,select,button{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0b1324;color:var(--text);font:inherit}
     button{background:var(--accent);border:none;cursor:pointer}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
     .stat{background:var(--panel2);border-radius:12px;padding:12px}
     .docs{display:grid;gap:10px}
     .doc{background:#0b1324;border:1px solid var(--border);border-radius:12px;padding:12px}
@@ -68,6 +68,18 @@
             <option value="only">Possible duplicates only</option>
             <option value="exclude">Exclude duplicates</option>
           </select>
+          <select id="triage" onchange="render()">
+            <option value="all">All triage states</option>
+            <option value="keep">Keep</option>
+            <option value="review">Review</option>
+            <option value="discard">Discard</option>
+          </select>
+          <select id="language" onchange="render()">
+            <option value="all">All languages</option>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="unknown">Unknown</option>
+          </select>
         </section>
         <section class="card">
           <strong>Stats</strong>
@@ -111,6 +123,8 @@
         <div class="stat"><div class="muted small">Top folders</div><div>${Object.keys(s.byTopLevel || {}).length}</div></div>
         <div class="stat"><div class="muted small">File types</div><div>${Object.keys(s.byExtension || {}).length}</div></div>
         <div class="stat"><div class="muted small">Possible duplicates</div><div>${s.possibleDuplicateFiles || 0}</div></div>
+        <div class="stat"><div class="muted small">Keep</div><div>${(s.byTriage && s.byTriage.keep) || 0}</div></div>
+        <div class="stat"><div class="muted small">Review</div><div>${(s.byTriage && s.byTriage.review) || 0}</div></div>
       `;
     }
     function render(){
@@ -120,14 +134,18 @@
       const ext = document.getElementById('ext').value;
       const kind = document.getElementById('kind').value;
       const duplicates = document.getElementById('duplicates').value;
+      const triage = document.getElementById('triage').value;
+      const language = document.getElementById('language').value;
       const docs = state.index.documents.filter(d => {
         if(top !== 'all' && d.topLevel !== top) return false;
         if(ext !== 'all' && d.extension !== ext) return false;
         if(kind !== 'all' && d.kind !== kind) return false;
+        if(triage !== 'all' && d.triage !== triage) return false;
+        if(language !== 'all' && d.language !== language) return false;
         if(duplicates === 'only' && !d.isPossibleDuplicate) return false;
         if(duplicates === 'exclude' && d.isPossibleDuplicate) return false;
         if(!q) return true;
-        return [d.name, d.relativePath, (d.tags || []).join(' ')].join(' ').toLowerCase().includes(q);
+        return [d.name, d.relativePath, d.format || '', d.language || '', d.triage || '', (d.tags || []).join(' ')].join(' ').toLowerCase().includes(q);
       });
       document.getElementById('count').textContent = `${docs.length} matching documents`;
       document.getElementById('docs').innerHTML = docs.slice(0, 500).map(d => `
@@ -137,8 +155,8 @@
             <span class="badge">${d.extension}</span>
           </div>
           <div class="muted small" style="margin-top:6px">${d.relativePath}</div>
-          <div class="muted small" style="margin-top:6px">${d.kind} · ${(d.sizeBytes/1024/1024).toFixed(2)} MB</div>
-          <div class="tags">${(d.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}${d.isPossibleDuplicate ? '<span class="tag">possible-duplicate</span>' : ''}</div>
+          <div class="muted small" style="margin-top:6px">${d.kind} · ${d.format || 'unknown-format'} · ${d.language || 'unknown'} · ${(d.sizeBytes/1024/1024).toFixed(2)} MB</div>
+          <div class="tags">${(d.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}<span class="tag">${d.triage || 'review'}</span>${d.isPossibleDuplicate ? '<span class="tag">possible-duplicate</span>' : ''}</div>
         </article>
       `).join('') || '<div class="muted">No matching documents.</div>';
     }

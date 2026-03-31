@@ -6,7 +6,7 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(os.environ.get('LECTURAS_ROOT', '/Users/ronin/Desktop/lecturas')).expanduser()
+ROOT = Path(os.environ.get('LECTURAS_ROOT', '/Users/ronin/Desktop/Reading  Index')).expanduser()
 OUT = Path(__file__).resolve().parent.parent / 'data' / 'index.json'
 
 SKIP_EXTENSIONS = {'.ds_store'}
@@ -46,12 +46,64 @@ def guess_tags(parts, name):
         'public policy': ['policy'],
         'content moderation': ['content-moderation'],
         'encryption messaging apps': ['messaging-apps'],
-        'opsec': ['opsec']
+        'opsec': ['opsec'],
+        'far right': ['far-right'],
+        'democracy': ['democracy'],
+        'election': ['elections'],
+        'troll': ['trolling'],
+        'ransomware': ['ransomware'],
+        'telegram': ['telegram'],
+        'signal': ['signal'],
+        'whatsapp': ['whatsapp']
     }
     for key, values in mapping.items():
         if key in lowered:
             tags.extend(values)
     return sorted(set(tags))
+
+
+def detect_language(text):
+    lowered = text.lower()
+    score_es = sum(token in lowered for token in [' informe ', ' para ', ' y ', ' de ', ' la ', ' el ', ' una ', ' sobre '])
+    score_en = sum(token in lowered for token in [' the ', ' and ', ' of ', ' report ', ' for ', ' in ', ' on '])
+    if score_es > score_en and score_es > 1:
+        return 'es'
+    if score_en > score_es and score_en > 1:
+        return 'en'
+    return 'unknown'
+
+
+def classify_format(ext, name):
+    lowered = name.lower()
+    if ext in {'pdf', 'doc', 'docx', 'txt', 'rtf'}:
+        if 'report' in lowered or 'informe' in lowered:
+            return 'report'
+        if 'guide' in lowered or 'toolkit' in lowered or 'manual' in lowered:
+            return 'guide'
+        if 'brief' in lowered:
+            return 'brief'
+        if 'proposal' in lowered:
+            return 'proposal'
+        if 'complaint' in lowered or 'ley' in lowered or 'law' in lowered:
+            return 'legal-policy'
+        return 'document'
+    if ext in {'ppt', 'pptx', 'key', 'pps'}:
+        return 'presentation'
+    if ext in {'jpg', 'jpeg', 'png', 'gif', 'heic'}:
+        return 'image'
+    if ext in {'mov', 'wav', 'wmv'}:
+        return 'media'
+    if ext in {'xls', 'xlsx', 'dbf', 'db'}:
+        return 'dataset'
+    return 'other'
+
+
+def initial_triage(doc_format, is_duplicate):
+    if is_duplicate:
+        return 'review'
+    if doc_format in {'report', 'guide', 'brief', 'legal-policy', 'presentation', 'dataset'}:
+        return 'keep'
+    return 'review'
 
 
 def main():
@@ -78,6 +130,9 @@ def main():
         digest = file_hash(path) if stat.st_size <= 50 * 1024 * 1024 else None
         if digest:
             hash_groups[digest].append(str(rel))
+        doc_kind = 'document' if ext in {'pdf', 'doc', 'docx', 'txt', 'ppt', 'pptx', 'key'} else 'media' if ext in {'jpg', 'jpeg', 'png', 'gif', 'heic', 'mov', 'wav', 'wmv'} else 'other'
+        doc_format = classify_format(ext, path.name)
+        language = detect_language(f" {' '.join(parts[:-1])} {path.stem} ")
         docs.append({
             'id': str(rel).lower().replace(' ', '-').replace('/', '__'),
             'name': path.name,
@@ -88,17 +143,27 @@ def main():
             'sizeBytes': stat.st_size,
             'modifiedAt': datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc).isoformat(),
             'tags': guess_tags(parts[:-1], path.stem),
+            'language': language,
+            'format': doc_format,
+            'triage': 'review',
             'notes': '',
             'duplicateGroup': digest,
-            'kind': 'document' if ext in {'pdf', 'doc', 'docx', 'txt', 'ppt', 'pptx', 'key'} else 'media' if ext in {'jpg', 'jpeg', 'png', 'gif', 'heic', 'mov', 'wav', 'wmv'} else 'other'
+            'kind': doc_kind
         })
         by_ext[ext] += 1
         by_top[top_level] += 1
 
     duplicate_groups = {k: v for k, v in hash_groups.items() if len(v) > 1}
     duplicate_paths = {p for paths in duplicate_groups.values() for p in paths}
+    triage_counter = Counter()
+    format_counter = Counter()
+    language_counter = Counter()
     for doc in docs:
         doc['isPossibleDuplicate'] = doc['relativePath'] in duplicate_paths
+        doc['triage'] = initial_triage(doc['format'], doc['isPossibleDuplicate'])
+        triage_counter[doc['triage']] += 1
+        format_counter[doc['format']] += 1
+        language_counter[doc['language']] += 1
 
     payload = {
         'generatedAt': datetime.now(timezone.utc).isoformat(),
@@ -108,7 +173,10 @@ def main():
             'possibleDuplicateFiles': len(duplicate_paths),
             'duplicateGroups': len(duplicate_groups),
             'byExtension': dict(sorted(by_ext.items(), key=lambda kv: (-kv[1], kv[0]))),
-            'byTopLevel': dict(sorted(by_top.items(), key=lambda kv: (-kv[1], kv[0])))
+            'byTopLevel': dict(sorted(by_top.items(), key=lambda kv: (-kv[1], kv[0]))),
+            'byFormat': dict(sorted(format_counter.items(), key=lambda kv: (-kv[1], kv[0]))),
+            'byLanguage': dict(sorted(language_counter.items(), key=lambda kv: (-kv[1], kv[0]))),
+            'byTriage': dict(sorted(triage_counter.items(), key=lambda kv: (-kv[1], kv[0])))
         },
         'duplicateGroups': duplicate_groups,
         'documents': sorted(docs, key=lambda d: d['relativePath'].lower())

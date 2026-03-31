@@ -11,7 +11,7 @@ Private dashboard to index and search the `lecturas` corpus.
 
 ## Current approach
 
-- source corpus stays in place at `~/Desktop/lecturas`
+- source corpus stays in place at `~/Desktop/Reading  Index`
 - Python script builds a JSON inventory
 - Node/Express app serves a searchable dashboard
 
