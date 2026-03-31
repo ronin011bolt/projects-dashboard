@@ -34,7 +34,8 @@ export DASHBOARD_PASSWORD=your-password
 2. Connect this repo/folder
 3. Add an environment variable:
    - `DASHBOARD_PASSWORD=your-private-password`
-4. Deploy using the included `railway.json`
+4. Keep the example projects or replace `data/projects.json` later with real ones
+5. Deploy using the included `railway.json`
 
 ## Data
 
