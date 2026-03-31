@@ -4,9 +4,14 @@
       "id": "confirmado",
       "name": "Confirmado",
       "status": "planning",
+      "semaphore": "yellow",
       "updatedAt": "2026-03-31",
       "summary": "Project entry for journalism and verification work.",
       "tags": ["journalism", "verification"],
+      "nextSteps": ["Define current scope", "Clarify immediate deliverable"],
+      "blockers": [],
+      "stalledByLuis": false,
+      "stalledReason": "",
       "activities": [
         {
           "date": "2026-03-31",
@@ -19,9 +24,14 @@
       "id": "vector-critico",
       "name": "Vector Crítico",
       "status": "active",
+      "semaphore": "green",
       "updatedAt": "2026-04-01",
       "summary": "Editorial project linked to the Vector Crítico ecosystem and related tooling.",
       "tags": ["newsletter", "editorial", "website"],
+      "nextSteps": ["Map current workstreams", "Add linked repos and live URLs into the dashboard"],
+      "blockers": [],
+      "stalledByLuis": false,
+      "stalledReason": "",
       "activities": [
         {
           "date": "2026-04-01",
@@ -34,9 +44,14 @@
       "id": "monetization-tool",
       "name": "Monetization Tool",
       "status": "active",
+      "semaphore": "green",
       "updatedAt": "2026-04-01",
       "summary": "Project for the Vector Crítico monetization tool deployed at mt.vectorcritico.com.",
       "tags": ["tooling", "product", "website"],
+      "nextSteps": ["Add repo and deployment details", "Clarify current roadmap or pending bugs"],
+      "blockers": [],
+      "stalledByLuis": false,
+      "stalledReason": "",
       "activities": [
         {
           "date": "2026-04-01",
@@ -49,9 +64,14 @@
       "id": "cartas-a-desconocidos",
       "name": "Cartas a Desconocidos",
       "status": "active",
+      "semaphore": "green",
       "updatedAt": "2026-04-01",
       "summary": "Website and project tracked separately at cartasadesconocidos.com.",
       "tags": ["website", "editorial", "project"],
+      "nextSteps": ["Add repo and content workflow notes", "Clarify what is live vs pending"],
+      "blockers": [],
+      "stalledByLuis": false,
+      "stalledReason": "",
       "activities": [
         {
           "date": "2026-04-01",
@@ -64,9 +84,14 @@
       "id": "pulso-digital-theme",
       "name": "Pulso Digital Theme",
       "status": "active",
+      "semaphore": "green",
       "updatedAt": "2026-04-01",
       "summary": "Shared theme project used in vectorcritico.com and tracked as its own asset/repo.",
       "tags": ["theme", "design", "shared-asset"],
+      "nextSteps": ["Add implementation notes", "Map which sites currently depend on the theme"],
+      "blockers": [],
+      "stalledByLuis": false,
+      "stalledReason": "",
       "activities": [
         {
           "date": "2026-04-01",
@@ -79,9 +104,14 @@
       "id": "public-website-analyzer",
       "name": "Public Website Analyzer",
       "status": "planning",
+      "semaphore": "yellow",
       "updatedAt": "2026-04-01",
       "summary": "Provisional project for a public website analyzer. Name may change later.",
       "tags": ["analysis", "web", "provisional"],
+      "nextSteps": ["Define core use case", "Rename project when concept is clearer"],
+      "blockers": [],
+      "stalledByLuis": true,
+      "stalledReason": "Needs clearer scope or confirmation before execution.",
       "activities": [
         {
           "date": "2026-04-01",
@@ -94,9 +124,14 @@
       "id": "guatecompras-vendors-investigation",
       "name": "Guatecompras Vendors Investigation",
       "status": "planning",
+      "semaphore": "yellow",
       "updatedAt": "2026-04-01",
       "summary": "Provisional journalistic data investigation focused on Guatecompras vendors. Name may change later.",
       "tags": ["investigation", "data", "guatemala", "provisional"],
+      "nextSteps": ["Define research question", "Clarify available data sources and first output"],
+      "blockers": [],
+      "stalledByLuis": true,
+      "stalledReason": "Needs sharper framing before project execution starts.",
       "activities": [
         {
           "date": "2026-04-01",

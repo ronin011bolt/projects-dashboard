@@ -36,6 +36,23 @@ function rejectIfUnauthorized(req, res, next) {
   next();
 }
 
+function normalizeProject(project) {
+  return {
+    id: project.id,
+    name: project.name,
+    status: project.status || 'planning',
+    semaphore: project.semaphore || 'yellow',
+    updatedAt: project.updatedAt || new Date().toISOString().slice(0, 10),
+    summary: project.summary || '',
+    tags: Array.isArray(project.tags) ? project.tags : [],
+    nextSteps: Array.isArray(project.nextSteps) ? project.nextSteps : [],
+    blockers: Array.isArray(project.blockers) ? project.blockers : [],
+    stalledByLuis: Boolean(project.stalledByLuis),
+    stalledReason: project.stalledReason || '',
+    activities: Array.isArray(project.activities) ? project.activities : []
+  };
+}
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true });
 });
@@ -56,15 +73,8 @@ app.post('/api/projects', rejectIfUnauthorized, (req, res) => {
     return res.status(409).json({ error: 'project id already exists' });
   }
 
-  const newProject = {
-    id: project.id,
-    name: project.name,
-    status: project.status || 'planning',
-    updatedAt: new Date().toISOString().slice(0, 10),
-    summary: project.summary || '',
-    tags: Array.isArray(project.tags) ? project.tags : [],
-    activities: Array.isArray(project.activities) ? project.activities : []
-  };
+  const newProject = normalizeProject(project);
+  newProject.updatedAt = new Date().toISOString().slice(0, 10);
 
   data.projects.push(newProject);
   saveProjects(data);
@@ -88,6 +98,7 @@ app.post('/api/projects/:id/activities', rejectIfUnauthorized, (req, res) => {
   project.activities.unshift(activity);
   project.updatedAt = activity.date;
   if (req.body.status) project.status = req.body.status;
+  if (req.body.semaphore) project.semaphore = req.body.semaphore;
   if (typeof req.body.summary === 'string') project.summary = req.body.summary;
 
   saveProjects(data);
@@ -104,8 +115,13 @@ app.patch('/api/projects/:id', rejectIfUnauthorized, (req, res) => {
 
   if (typeof req.body.name === 'string') project.name = req.body.name;
   if (typeof req.body.status === 'string') project.status = req.body.status;
+  if (typeof req.body.semaphore === 'string') project.semaphore = req.body.semaphore;
   if (typeof req.body.summary === 'string') project.summary = req.body.summary;
   if (Array.isArray(req.body.tags)) project.tags = req.body.tags;
+  if (Array.isArray(req.body.nextSteps)) project.nextSteps = req.body.nextSteps;
+  if (Array.isArray(req.body.blockers)) project.blockers = req.body.blockers;
+  if (typeof req.body.stalledByLuis === 'boolean') project.stalledByLuis = req.body.stalledByLuis;
+  if (typeof req.body.stalledReason === 'string') project.stalledReason = req.body.stalledReason;
   project.updatedAt = new Date().toISOString().slice(0, 10);
 
   saveProjects(data);
