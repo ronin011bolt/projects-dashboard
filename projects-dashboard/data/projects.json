@@ -1,0 +1,18 @@
+{
+  "projects": [
+    {
+      "id": "confirmado",
+      "name": "Confirmado",
+      "status": "planning",
+      "updatedAt": "2026-03-31",
+      "summary": "Initial placeholder project.",
+      "activities": [
+        {
+          "date": "2026-03-31",
+          "title": "Dashboard scaffold created",
+          "note": "Project tracking system initialized."
+        }
+      ]
+    }
+  ]
+}
