@@ -1,4 +1,4 @@
-# Lecturas Inventory
+# Reading Index
 
 Private dashboard to index and search the `lecturas` corpus.
 

@@ -38,5 +38,5 @@ app.get('/', (_req, res) => {
 });
 
 app.listen(PORT, HOST, () => {
-  console.log(`Lecturas inventory running on http://${HOST}:${PORT}`);
+  console.log(`Reading Index running on http://${HOST}:${PORT}`);
 });
