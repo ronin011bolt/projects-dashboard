@@ -7,6 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
 const dataPath = path.join(__dirname, 'data', 'projects.json');
 const dashboardPassword = process.env.DASHBOARD_PASSWORD || '';
 
@@ -116,6 +117,6 @@ app.get('/', (_req, res) => {
   res.type('html').send(html);
 });
 
-app.listen(PORT, () => {
-  console.log(`Projects dashboard running on port ${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Projects dashboard running on http://${HOST}:${PORT}`);
 });
