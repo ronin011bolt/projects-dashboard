@@ -5,7 +5,10 @@ Private dashboard to track multiple projects separately.
 ## What it does
 
 - Keeps each project isolated in the data model
-- Shows status, summary, and activity log per project
+- Shows status, summary, tags, and activity log per project
+- Lets you create projects from the UI
+- Lets you add activity updates from the UI
+- Supports a simple private password gate
 - Ready to deploy on Railway
 
 ## Local run
@@ -13,16 +16,25 @@ Private dashboard to track multiple projects separately.
 ```bash
 cd projects-dashboard
 npm install
+cp .env.example .env
 npm run dev
 ```
 
 Open: http://localhost:3000
 
+Optional local env:
+
+```bash
+export DASHBOARD_PASSWORD=your-password
+```
+
 ## Railway deploy
 
 1. Create a new Railway project
 2. Connect this repo/folder
-3. Deploy using the included `railway.json`
+3. Add an environment variable:
+   - `DASHBOARD_PASSWORD=your-private-password`
+4. Deploy using the included `railway.json`
 
 ## Data
 
@@ -37,11 +49,19 @@ Each project has:
 - `status`
 - `updatedAt`
 - `summary`
+- `tags[]`
 - `activities[]`
 
-## Next improvements
+## Current limits
 
-- Add project creation/edit UI
-- Add filters and tags
-- Add auth for private access
-- Persist via a database instead of JSON
+- Password protection is simple and lightweight, not enterprise auth
+- Data is stored in JSON, not a database
+- Good for phase 1 private operations, but should later move to a proper DB + stronger auth
+
+## Good next improvements
+
+- Edit and archive projects from the UI
+- Per-project milestones
+- Search
+- Database persistence
+- Proper authentication layer

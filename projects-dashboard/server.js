@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 const dataPath = path.join(__dirname, 'data', 'projects.json');
+const dashboardPassword = process.env.DASHBOARD_PASSWORD || '';
 
 app.use(express.json());
 app.use('/static', express.static(path.join(__dirname, 'static')));
@@ -21,11 +22,28 @@ function saveProjects(data) {
   fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
 }
 
-app.get('/api/projects', (_req, res) => {
+function isAuthorized(req) {
+  if (!dashboardPassword) return true;
+  const supplied = req.headers['x-dashboard-password'];
+  return supplied && supplied === dashboardPassword;
+}
+
+function rejectIfUnauthorized(req, res, next) {
+  if (!isAuthorized(req)) {
+    return res.status(401).json({ error: 'unauthorized' });
+  }
+  next();
+}
+
+app.get('/api/health', (_req, res) => {
+  res.json({ ok: true });
+});
+
+app.get('/api/projects', rejectIfUnauthorized, (_req, res) => {
   res.json(loadProjects());
 });
 
-app.post('/api/projects', (req, res) => {
+app.post('/api/projects', rejectIfUnauthorized, (req, res) => {
   const data = loadProjects();
   const project = req.body;
 
@@ -37,17 +55,60 @@ app.post('/api/projects', (req, res) => {
     return res.status(409).json({ error: 'project id already exists' });
   }
 
-  data.projects.push({
+  const newProject = {
     id: project.id,
     name: project.name,
     status: project.status || 'planning',
-    updatedAt: project.updatedAt || new Date().toISOString().slice(0, 10),
+    updatedAt: new Date().toISOString().slice(0, 10),
     summary: project.summary || '',
+    tags: Array.isArray(project.tags) ? project.tags : [],
     activities: Array.isArray(project.activities) ? project.activities : []
-  });
+  };
+
+  data.projects.push(newProject);
+  saveProjects(data);
+  res.status(201).json(newProject);
+});
+
+app.post('/api/projects/:id/activities', rejectIfUnauthorized, (req, res) => {
+  const data = loadProjects();
+  const project = data.projects.find((p) => p.id === req.params.id);
+
+  if (!project) {
+    return res.status(404).json({ error: 'project not found' });
+  }
+
+  const activity = {
+    date: req.body.date || new Date().toISOString().slice(0, 10),
+    title: req.body.title || 'Update',
+    note: req.body.note || ''
+  };
+
+  project.activities.unshift(activity);
+  project.updatedAt = activity.date;
+  if (req.body.status) project.status = req.body.status;
+  if (typeof req.body.summary === 'string') project.summary = req.body.summary;
 
   saveProjects(data);
-  res.status(201).json(project);
+  res.status(201).json(activity);
+});
+
+app.patch('/api/projects/:id', rejectIfUnauthorized, (req, res) => {
+  const data = loadProjects();
+  const project = data.projects.find((p) => p.id === req.params.id);
+
+  if (!project) {
+    return res.status(404).json({ error: 'project not found' });
+  }
+
+  if (typeof req.body.name === 'string') project.name = req.body.name;
+  if (typeof req.body.status === 'string') project.status = req.body.status;
+  if (typeof req.body.summary === 'string') project.summary = req.body.summary;
+  if (Array.isArray(req.body.tags)) project.tags = req.body.tags;
+  project.updatedAt = new Date().toISOString().slice(0, 10);
+
+  saveProjects(data);
+  res.json(project);
 });
 
 app.get('/', (_req, res) => {

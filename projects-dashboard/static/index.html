@@ -5,15 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects Dashboard</title>
   <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #172033;
+      --border: #243041;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-2: #1d4ed8;
+      --good: #15803d;
+      --warn: #b45309;
+      --soft: #0b1220;
+    }
+    * { box-sizing: border-box; }
     body {
       font-family: Inter, system-ui, sans-serif;
       margin: 0;
       padding: 24px;
-      background: #0f172a;
-      color: #e2e8f0;
+      background: var(--bg);
+      color: var(--text);
     }
     .wrap {
-      max-width: 980px;
+      max-width: 1180px;
       margin: 0 auto;
     }
     .top {
@@ -22,31 +36,101 @@
       align-items: center;
       gap: 16px;
       margin-bottom: 24px;
+      flex-wrap: wrap;
     }
     .card {
-      background: #111827;
-      border: 1px solid #1f2937;
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: 16px;
       padding: 18px;
-      margin-bottom: 16px;
     }
-    .muted {
-      color: #94a3b8;
-    }
+    .muted { color: var(--muted); }
     .badge {
       display: inline-block;
       padding: 4px 10px;
       border-radius: 999px;
-      background: #1d4ed8;
+      background: var(--accent-2);
       font-size: 12px;
-    }
-    ul {
-      padding-left: 18px;
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: 320px 1fr;
       gap: 16px;
+    }
+    .stack { display: grid; gap: 16px; }
+    .project-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .project-item {
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--soft);
+      cursor: pointer;
+    }
+    .project-item.active {
+      border-color: var(--accent);
+      background: var(--panel-2);
+    }
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0b1324;
+      color: var(--text);
+      padding: 10px 12px;
+      font: inherit;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    button {
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.secondary {
+      background: #334155;
+    }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .activities { display: grid; gap: 10px; margin-top: 12px; }
+    .activity {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--soft);
+    }
+    .tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .tag {
+      background: #1e293b;
+      color: #cbd5e1;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    .hidden { display: none; }
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .two { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -60,32 +144,239 @@
       <div class="badge">Ronin Bolt ⚡</div>
     </div>
 
-    <div id="projects" class="grid"></div>
+    <div id="authCard" class="card" style="margin-bottom:16px;">
+      <div class="status-bar">
+        <strong>Private access</strong>
+        <span class="muted">Set a password in Railway via DASHBOARD_PASSWORD</span>
+      </div>
+      <div class="two">
+        <input id="password" type="password" placeholder="Dashboard password" />
+        <button onclick="savePassword()">Unlock</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <aside class="stack">
+        <section class="card">
+          <div class="status-bar">
+            <strong>Projects</strong>
+            <select id="statusFilter" onchange="renderProjects()">
+              <option value="all">All statuses</option>
+              <option value="planning">Planning</option>
+              <option value="backlog">Backlog</option>
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+          <div id="projectList" class="project-list"></div>
+        </section>
+
+        <section class="card">
+          <strong>New project</strong>
+          <div class="stack" style="margin-top:12px;">
+            <input id="newId" placeholder="project-id" />
+            <input id="newName" placeholder="Project name" />
+            <select id="newStatus">
+              <option value="planning">Planning</option>
+              <option value="backlog">Backlog</option>
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="done">Done</option>
+            </select>
+            <input id="newTags" placeholder="tags, comma, separated" />
+            <textarea id="newSummary" placeholder="Short summary"></textarea>
+            <button onclick="createProject()">Create project</button>
+          </div>
+        </section>
+      </aside>
+
+      <main class="stack">
+        <section class="card">
+          <div id="projectDetail"></div>
+        </section>
+
+        <section class="card">
+          <strong>Add activity</strong>
+          <div class="stack" style="margin-top:12px;">
+            <input id="activityTitle" placeholder="What happened?" />
+            <textarea id="activityNote" placeholder="Short note"></textarea>
+            <div class="two">
+              <select id="activityStatus">
+                <option value="">Keep current status</option>
+                <option value="planning">Planning</option>
+                <option value="backlog">Backlog</option>
+                <option value="active">Active</option>
+                <option value="paused">Paused</option>
+                <option value="done">Done</option>
+              </select>
+              <input id="activitySummary" placeholder="Optional summary update" />
+            </div>
+            <button onclick="addActivity()">Add activity</button>
+          </div>
+        </section>
+      </main>
+    </div>
   </div>
 
   <script>
+    let state = { projects: [], selectedId: null };
+
+    function passwordHeaders() {
+      const pwd = localStorage.getItem('dashboardPassword') || '';
+      return pwd ? { 'x-dashboard-password': pwd } : {};
+    }
+
+    function savePassword() {
+      const pwd = document.getElementById('password').value;
+      localStorage.setItem('dashboardPassword', pwd);
+      load();
+    }
+
+    async function request(url, options = {}) {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...passwordHeaders(),
+        ...(options.headers || {})
+      };
+      const res = await fetch(url, { ...options, headers });
+      if (res.status === 401) {
+        throw new Error('Unauthorized. Check dashboard password.');
+      }
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || 'Request failed');
+      }
+      return res.json();
+    }
+
     async function load() {
-      const res = await fetch('/api/projects');
-      const data = await res.json();
-      const root = document.getElementById('projects');
-      root.innerHTML = data.projects.map(project => `
-        <section class="card">
-          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
-            <div>
-              <h2 style="margin:0 0 8px 0">${project.name}</h2>
-              <div class="muted">${project.id}</div>
-            </div>
+      try {
+        const data = await request('/api/projects');
+        state.projects = data.projects || [];
+        if (!state.selectedId && state.projects.length) {
+          state.selectedId = state.projects[0].id;
+        }
+        renderProjects();
+        renderDetail();
+      } catch (err) {
+        document.getElementById('projectList').innerHTML = `<div class="muted">${err.message}</div>`;
+        document.getElementById('projectDetail').innerHTML = `<div class="muted">Unlock dashboard to view projects.</div>`;
+      }
+    }
+
+    function filteredProjects() {
+      const filter = document.getElementById('statusFilter').value;
+      return state.projects.filter(p => filter === 'all' || p.status === filter);
+    }
+
+    function renderProjects() {
+      const list = filteredProjects();
+      const root = document.getElementById('projectList');
+      if (!list.length) {
+        root.innerHTML = '<div class="muted">No projects for this filter.</div>';
+        return;
+      }
+      if (!list.find(p => p.id === state.selectedId)) {
+        state.selectedId = list[0].id;
+      }
+      root.innerHTML = list.map(project => `
+        <div class="project-item ${project.id === state.selectedId ? 'active' : ''}" onclick="selectProject('${project.id}')">
+          <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;">
+            <strong>${project.name}</strong>
             <span class="badge">${project.status}</span>
           </div>
-          <p>${project.summary || 'No summary yet.'}</p>
-          <div class="muted">Updated: ${project.updatedAt}</div>
-          <h3>Activities</h3>
-          <ul>
-            ${project.activities.map(a => `<li><strong>${a.date}</strong> — ${a.title}: ${a.note}</li>`).join('')}
-          </ul>
-        </section>
+          <div class="muted" style="margin-top:6px;">${project.id}</div>
+          <div class="muted" style="margin-top:6px;">Updated ${project.updatedAt}</div>
+        </div>
       `).join('');
+      renderDetail();
     }
+
+    function selectProject(id) {
+      state.selectedId = id;
+      renderProjects();
+    }
+
+    function renderDetail() {
+      const project = state.projects.find(p => p.id === state.selectedId);
+      const root = document.getElementById('projectDetail');
+      if (!project) {
+        root.innerHTML = '<div class="muted">Select a project.</div>';
+        return;
+      }
+      root.innerHTML = `
+        <div class="status-bar">
+          <div>
+            <h2 style="margin:0">${project.name}</h2>
+            <div class="muted">${project.id}</div>
+          </div>
+          <span class="badge">${project.status}</span>
+        </div>
+        <p>${project.summary || 'No summary yet.'}</p>
+        <div class="muted">Last update: ${project.updatedAt}</div>
+        <div class="tags">
+          ${(project.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
+        </div>
+        <div class="activities">
+          ${(project.activities || []).length ? project.activities.map(a => `
+            <div class="activity">
+              <div><strong>${a.title}</strong></div>
+              <div class="muted">${a.date}</div>
+              <div style="margin-top:8px;">${a.note || ''}</div>
+            </div>
+          `).join('') : '<div class="muted">No activities yet.</div>'}
+        </div>
+      `;
+    }
+
+    async function createProject() {
+      try {
+        await request('/api/projects', {
+          method: 'POST',
+          body: JSON.stringify({
+            id: document.getElementById('newId').value.trim(),
+            name: document.getElementById('newName').value.trim(),
+            status: document.getElementById('newStatus').value,
+            summary: document.getElementById('newSummary').value.trim(),
+            tags: document.getElementById('newTags').value.split(',').map(x => x.trim()).filter(Boolean)
+          })
+        });
+        document.getElementById('newId').value = '';
+        document.getElementById('newName').value = '';
+        document.getElementById('newSummary').value = '';
+        document.getElementById('newTags').value = '';
+        await load();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function addActivity() {
+      if (!state.selectedId) {
+        alert('Select a project first.');
+        return;
+      }
+      try {
+        await request(`/api/projects/${state.selectedId}/activities`, {
+          method: 'POST',
+          body: JSON.stringify({
+            title: document.getElementById('activityTitle').value.trim(),
+            note: document.getElementById('activityNote').value.trim(),
+            status: document.getElementById('activityStatus').value,
+            summary: document.getElementById('activitySummary').value.trim()
+          })
+        });
+        document.getElementById('activityTitle').value = '';
+        document.getElementById('activityNote').value = '';
+        document.getElementById('activityStatus').value = '';
+        document.getElementById('activitySummary').value = '';
+        await load();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
     load();
   </script>
 </body>

@@ -5,12 +5,28 @@
       "name": "Confirmado",
       "status": "planning",
       "updatedAt": "2026-03-31",
-      "summary": "Initial placeholder project.",
+      "summary": "Initial placeholder project for dashboard structure.",
+      "tags": ["journalism", "verification"],
       "activities": [
         {
           "date": "2026-03-31",
           "title": "Dashboard scaffold created",
           "note": "Project tracking system initialized."
+        }
+      ]
+    },
+    {
+      "id": "vector-critico",
+      "name": "Vector Crítico",
+      "status": "backlog",
+      "updatedAt": "2026-03-31",
+      "summary": "Example project entry for future editorial or research tracking.",
+      "tags": ["newsletter", "editorial"],
+      "activities": [
+        {
+          "date": "2026-03-31",
+          "title": "Placeholder added",
+          "note": "Created as a second example to test project separation."
         }
       ]
     }
