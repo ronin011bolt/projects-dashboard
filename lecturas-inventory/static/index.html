@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lecturas Inventory</title>
+  <style>
+    :root {
+      --bg:#0f172a; --panel:#111827; --panel2:#172033; --border:#243041; --text:#e2e8f0; --muted:#94a3b8; --accent:#2563eb;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;padding:24px;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+    .wrap{max-width:1280px;margin:0 auto}
+    .top,.row{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px}
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:16px}
+    .stack{display:grid;gap:16px}
+    .muted{color:var(--muted)}
+    .badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--accent);font-size:12px}
+    input,select,button{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0b1324;color:var(--text);font:inherit}
+    button{background:var(--accent);border:none;cursor:pointer}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .stat{background:var(--panel2);border-radius:12px;padding:12px}
+    .docs{display:grid;gap:10px}
+    .doc{background:#0b1324;border:1px solid var(--border);border-radius:12px;padding:12px}
+    .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .tag{background:#1e293b;padding:3px 8px;border-radius:999px;font-size:12px;color:#cbd5e1}
+    .small{font-size:12px}
+    @media (max-width: 900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap stack">
+    <div class="top">
+      <div>
+        <h1 style="margin:0">Lecturas Inventory</h1>
+        <div class="muted">Indexed library for Luis Assardo</div>
+      </div>
+      <div class="badge">created by ronin ⚡️</div>
+    </div>
+
+    <section class="card stack">
+      <div class="row">
+        <strong>Private access</strong>
+        <span class="muted">Enter password to unlock the inventory</span>
+      </div>
+      <div class="row">
+        <input id="password" type="password" placeholder="Dashboard password" />
+        <button onclick="savePassword()" style="max-width:180px">Unlock</button>
+      </div>
+    </section>
+
+    <div class="grid">
+      <aside class="stack">
+        <section class="card stack">
+          <strong>Filters</strong>
+          <input id="search" placeholder="Search name, path, topic..." oninput="render()" />
+          <select id="topLevel" onchange="render()"><option value="all">All top-level folders</option></select>
+          <select id="ext" onchange="render()"><option value="all">All file types</option></select>
+          <select id="kind" onchange="render()">
+            <option value="all">All kinds</option>
+            <option value="document">Documents</option>
+            <option value="media">Media</option>
+            <option value="other">Other</option>
+          </select>
+        </section>
+        <section class="card">
+          <strong>Stats</strong>
+          <div id="stats" class="stats" style="margin-top:12px"></div>
+        </section>
+      </aside>
+      <main class="stack">
+        <section class="card">
+          <div class="row" style="margin-bottom:12px">
+            <strong>Documents</strong>
+            <span id="count" class="muted small"></span>
+          </div>
+          <div id="docs" class="docs"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    let state = { index: null };
+    function headers(){ const pwd = localStorage.getItem('lecturasPassword') || ''; return pwd ? {'x-dashboard-password': pwd} : {}; }
+    function savePassword(){ localStorage.setItem('lecturasPassword', document.getElementById('password').value); load(); }
+    async function load(){
+      try {
+        const res = await fetch('/api/index', { headers: headers() });
+        if(res.status === 401) throw new Error('Unauthorized. Check password.');
+        state.index = await res.json();
+        fillFilters();
+        render();
+      } catch(err){
+        document.getElementById('docs').innerHTML = `<div class="muted">${err.message}</div>`;
+      }
+    }
+    function fillFilters(){
+      const tops = [...new Set(state.index.documents.map(d => d.topLevel).filter(Boolean))].sort();
+      const exts = [...new Set(state.index.documents.map(d => d.extension).filter(Boolean))].sort();
+      document.getElementById('topLevel').innerHTML = '<option value="all">All top-level folders</option>' + tops.map(x => `<option value="${x}">${x}</option>`).join('');
+      document.getElementById('ext').innerHTML = '<option value="all">All file types</option>' + exts.map(x => `<option value="${x}">${x}</option>`).join('');
+      const s = state.index.stats;
+      document.getElementById('stats').innerHTML = `
+        <div class="stat"><div class="muted small">Files</div><div>${s.totalFiles}</div></div>
+        <div class="stat"><div class="muted small">Top folders</div><div>${Object.keys(s.byTopLevel || {}).length}</div></div>
+        <div class="stat"><div class="muted small">File types</div><div>${Object.keys(s.byExtension || {}).length}</div></div>
+      `;
+    }
+    function render(){
+      if(!state.index) return;
+      const q = document.getElementById('search').value.trim().toLowerCase();
+      const top = document.getElementById('topLevel').value;
+      const ext = document.getElementById('ext').value;
+      const kind = document.getElementById('kind').value;
+      const docs = state.index.documents.filter(d => {
+        if(top !== 'all' && d.topLevel !== top) return false;
+        if(ext !== 'all' && d.extension !== ext) return false;
+        if(kind !== 'all' && d.kind !== kind) return false;
+        if(!q) return true;
+        return [d.name, d.relativePath, (d.tags || []).join(' ')].join(' ').toLowerCase().includes(q);
+      });
+      document.getElementById('count').textContent = `${docs.length} matching documents`;
+      document.getElementById('docs').innerHTML = docs.slice(0, 500).map(d => `
+        <article class="doc">
+          <div class="row">
+            <strong>${d.name}</strong>
+            <span class="badge">${d.extension}</span>
+          </div>
+          <div class="muted small" style="margin-top:6px">${d.relativePath}</div>
+          <div class="muted small" style="margin-top:6px">${d.kind} · ${(d.sizeBytes/1024/1024).toFixed(2)} MB</div>
+          <div class="tags">${(d.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+        </article>
+      `).join('') || '<div class="muted">No matching documents.</div>';
+    }
+    load();
+  </script>
+</body>
+</html>
