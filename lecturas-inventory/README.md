@@ -24,6 +24,13 @@ npm run index
 npm start
 ```
 
+For local-network access:
+
+```bash
+cd lecturas-inventory
+./scripts/start-network.sh
+```
+
 ## Environment
 
 - `LECTURAS_ROOT` → root folder of the corpus

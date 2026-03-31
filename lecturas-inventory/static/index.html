@@ -19,7 +19,7 @@
     .badge{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--accent);font-size:12px}
     input,select,button{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0b1324;color:var(--text);font:inherit}
     button{background:var(--accent);border:none;cursor:pointer}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
     .stat{background:var(--panel2);border-radius:12px;padding:12px}
     .docs{display:grid;gap:10px}
     .doc{background:#0b1324;border:1px solid var(--border);border-radius:12px;padding:12px}
@@ -63,6 +63,11 @@
             <option value="media">Media</option>
             <option value="other">Other</option>
           </select>
+          <select id="duplicates" onchange="render()">
+            <option value="all">All files</option>
+            <option value="only">Possible duplicates only</option>
+            <option value="exclude">Exclude duplicates</option>
+          </select>
         </section>
         <section class="card">
           <strong>Stats</strong>
@@ -105,6 +110,7 @@
         <div class="stat"><div class="muted small">Files</div><div>${s.totalFiles}</div></div>
         <div class="stat"><div class="muted small">Top folders</div><div>${Object.keys(s.byTopLevel || {}).length}</div></div>
         <div class="stat"><div class="muted small">File types</div><div>${Object.keys(s.byExtension || {}).length}</div></div>
+        <div class="stat"><div class="muted small">Possible duplicates</div><div>${s.possibleDuplicateFiles || 0}</div></div>
       `;
     }
     function render(){
@@ -113,10 +119,13 @@
       const top = document.getElementById('topLevel').value;
       const ext = document.getElementById('ext').value;
       const kind = document.getElementById('kind').value;
+      const duplicates = document.getElementById('duplicates').value;
       const docs = state.index.documents.filter(d => {
         if(top !== 'all' && d.topLevel !== top) return false;
         if(ext !== 'all' && d.extension !== ext) return false;
         if(kind !== 'all' && d.kind !== kind) return false;
+        if(duplicates === 'only' && !d.isPossibleDuplicate) return false;
+        if(duplicates === 'exclude' && d.isPossibleDuplicate) return false;
         if(!q) return true;
         return [d.name, d.relativePath, (d.tags || []).join(' ')].join(' ').toLowerCase().includes(q);
       });
@@ -129,7 +138,7 @@
           </div>
           <div class="muted small" style="margin-top:6px">${d.relativePath}</div>
           <div class="muted small" style="margin-top:6px">${d.kind} · ${(d.sizeBytes/1024/1024).toFixed(2)} MB</div>
-          <div class="tags">${(d.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+          <div class="tags">${(d.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}${d.isPossibleDuplicate ? '<span class="tag">possible-duplicate</span>' : ''}</div>
         </article>
       `).join('') || '<div class="muted">No matching documents.</div>';
     }
