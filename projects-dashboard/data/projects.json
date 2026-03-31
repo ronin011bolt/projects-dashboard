@@ -74,6 +74,36 @@
           "note": "Tracked as a separate project because it is a reusable asset with its own repository."
         }
       ]
+    },
+    {
+      "id": "public-website-analyzer",
+      "name": "Public Website Analyzer",
+      "status": "planning",
+      "updatedAt": "2026-04-01",
+      "summary": "Provisional project for a public website analyzer. Name may change later.",
+      "tags": ["analysis", "web", "provisional"],
+      "activities": [
+        {
+          "date": "2026-04-01",
+          "title": "Project added",
+          "note": "Added as a provisional project; title expected to change later."
+        }
+      ]
+    },
+    {
+      "id": "guatecompras-vendors-investigation",
+      "name": "Guatecompras Vendors Investigation",
+      "status": "planning",
+      "updatedAt": "2026-04-01",
+      "summary": "Provisional journalistic data investigation focused on Guatecompras vendors. Name may change later.",
+      "tags": ["investigation", "data", "guatemala", "provisional"],
+      "activities": [
+        {
+          "date": "2026-04-01",
+          "title": "Project added",
+          "note": "Added as a provisional investigation project; title expected to change later."
+        }
+      ]
     }
   ]
 }
