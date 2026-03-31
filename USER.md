@@ -4,7 +4,7 @@
 - **What to call them:** Chief
 - **Pronouns:**
 - **Timezone:** Europe/Berlin
-- **Notes:** Journalist working on many projects.
+- **Notes:** Journalist working on many projects. Prefers concise, direct, brief communication. Wants proactive help. For now, avoid communication with people other than him; current channels are already set. Limits can be discussed later, but once instructions are settled, avoid stalling progress.
 
 ## Context
 
