@@ -1,142 +1,169 @@
 {
   "projects": [
     {
-      "id": "confirmado",
-      "name": "Confirmado",
+      "id": "projects-dashboard",
+      "name": "projects-dashboard",
       "status": "planning",
       "semaphore": "yellow",
-      "updatedAt": "2026-03-31",
-      "summary": "Project entry for journalism and verification work.",
-      "tags": ["journalism", "verification"],
-      "nextSteps": ["Define current scope", "Clarify immediate deliverable"],
+      "updatedAt": "2026-04-02",
+      "summary": "A personal dashboard to monitor and analyze all projects working on.",
+      "tags": ["tool", "internal"],
+      "nextSteps": [
+        "Review current dashboard schema against the morning-status workflow.",
+        "Add explicit fields for website status, planning next step, and cleaner status registry views."
+      ],
       "blockers": [],
       "stalledByLuis": false,
       "stalledReason": "",
       "activities": [
         {
-          "date": "2026-03-31",
-          "title": "Dashboard scaffold created",
-          "note": "Project tracking system initialized."
+          "date": "2026-04-02",
+          "title": "Project registry corrected",
+          "note": "Updated the dashboard data to match the confirmed project list and prepared it to serve as the morning status registry."
         }
       ]
     },
     {
-      "id": "vector-critico",
-      "name": "Vector Crítico",
-      "status": "active",
-      "semaphore": "green",
-      "updatedAt": "2026-04-01",
-      "summary": "Editorial project linked to the Vector Crítico ecosystem and related tooling.",
-      "tags": ["newsletter", "editorial", "website"],
-      "nextSteps": ["Map current workstreams", "Add linked repos and live URLs into the dashboard"],
+      "id": "reading-manager",
+      "name": "reading-manager",
+      "status": "planning",
+      "semaphore": "yellow",
+      "updatedAt": "2026-04-02",
+      "summary": "A personal website to make easier find and consume work-related readings, a personal library management system.",
+      "tags": ["tool", "internal"],
+      "nextSteps": [
+        "Define the minimum metadata and ingestion flow for the reading library.",
+        "Decide the first usable interface for search, filtering, and reading tracking."
+      ],
       "blockers": [],
       "stalledByLuis": false,
       "stalledReason": "",
       "activities": [
         {
-          "date": "2026-04-01",
-          "title": "Project confirmed",
-          "note": "Tracked as an active project with its own ecosystem and related repos."
+          "date": "2026-04-02",
+          "title": "Planning baseline recorded",
+          "note": "Marked as planning; morning status should focus on the next concrete build step instead of uptime."
         }
       ]
     },
     {
       "id": "monetization-tool",
-      "name": "Monetization Tool",
+      "name": "monetization-tool",
       "status": "active",
       "semaphore": "green",
-      "updatedAt": "2026-04-01",
-      "summary": "Project for the Vector Crítico monetization tool deployed at mt.vectorcritico.com.",
-      "tags": ["tooling", "product", "website"],
-      "nextSteps": ["Add repo and deployment details", "Clarify current roadmap or pending bugs"],
-      "blockers": [],
+      "updatedAt": "2026-04-02",
+      "summary": "A dashboard where people can understand and play with data from Meta monetization archives.",
+      "tags": ["web app", "public", "journalism"],
+      "nextSteps": [
+        "Verify live site uptime and record the canonical production URL in the dashboard.",
+        "Add current roadmap, bugs, or pending data updates."
+      ],
+      "blockers": [
+        "Live website status still needs verification from a network check in this session."
+      ],
       "stalledByLuis": false,
       "stalledReason": "",
       "activities": [
         {
-          "date": "2026-04-01",
-          "title": "Project added",
-          "note": "Added from Chief's list of active projects with live site and GitHub repo reference."
+          "date": "2026-04-02",
+          "title": "Morning status model applied",
+          "note": "Kept as active; this project should report live-site status as part of the morning registry."
         }
       ]
     },
     {
-      "id": "cartas-a-desconocidos",
-      "name": "Cartas a Desconocidos",
+      "id": "cartas-desconocidos",
+      "name": "cartas-desconocidos",
       "status": "active",
       "semaphore": "green",
-      "updatedAt": "2026-04-01",
-      "summary": "Website and project tracked separately at cartasadesconocidos.com.",
-      "tags": ["website", "editorial", "project"],
-      "nextSteps": ["Add repo and content workflow notes", "Clarify what is live vs pending"],
-      "blockers": [],
+      "updatedAt": "2026-04-02",
+      "summary": "A web app to facilitate handwritten letter exchange.",
+      "tags": ["web app", "public"],
+      "nextSteps": [
+        "Verify live site uptime and add the canonical production URL.",
+        "Clarify current product/content workflow and pending improvements."
+      ],
+      "blockers": [
+        "Live website status still needs verification from a network check in this session."
+      ],
       "stalledByLuis": false,
       "stalledReason": "",
       "activities": [
         {
-          "date": "2026-04-01",
-          "title": "Project added",
-          "note": "Added as a separate active project with website and GitHub repo reference."
+          "date": "2026-04-02",
+          "title": "Morning status model applied",
+          "note": "Kept as active; this project should report live-site status as part of the morning registry."
         }
       ]
     },
     {
-      "id": "pulso-digital-theme",
-      "name": "Pulso Digital Theme",
-      "status": "active",
-      "semaphore": "green",
-      "updatedAt": "2026-04-01",
-      "summary": "Shared theme project used in vectorcritico.com and tracked as its own asset/repo.",
-      "tags": ["theme", "design", "shared-asset"],
-      "nextSteps": ["Add implementation notes", "Map which sites currently depend on the theme"],
-      "blockers": [],
-      "stalledByLuis": false,
-      "stalledReason": "",
-      "activities": [
-        {
-          "date": "2026-04-01",
-          "title": "Theme project added",
-          "note": "Tracked as a separate project because it is a reusable asset with its own repository."
-        }
-      ]
-    },
-    {
-      "id": "public-website-analyzer",
-      "name": "Public Website Analyzer",
+      "id": "favorite-vendors",
+      "name": "favorite-vendors",
       "status": "planning",
       "semaphore": "yellow",
-      "updatedAt": "2026-04-01",
-      "summary": "Provisional project for a public website analyzer. Name may change later.",
-      "tags": ["analysis", "web", "provisional"],
-      "nextSteps": ["Define core use case", "Rename project when concept is clearer"],
+      "updatedAt": "2026-04-02",
+      "summary": "A web app where people can learn from big data analytics from government.",
+      "tags": ["web app", "public", "journalism"],
+      "nextSteps": [
+        "Define the core public-facing use case and target audience.",
+        "Identify the first dataset, analytical angle, and MVP output."
+      ],
       "blockers": [],
-      "stalledByLuis": true,
-      "stalledReason": "Needs clearer scope or confirmation before execution.",
+      "stalledByLuis": false,
+      "stalledReason": "",
       "activities": [
         {
-          "date": "2026-04-01",
-          "title": "Project added",
-          "note": "Added as a provisional project; title expected to change later."
+          "date": "2026-04-02",
+          "title": "Planning baseline recorded",
+          "note": "Marked as planning; morning status should state the immediate next design or research step."
         }
       ]
     },
     {
-      "id": "guatecompras-vendors-investigation",
-      "name": "Guatecompras Vendors Investigation",
+      "id": "osint-basics",
+      "name": "OSINT-basics",
       "status": "planning",
       "semaphore": "yellow",
-      "updatedAt": "2026-04-01",
-      "summary": "Provisional journalistic data investigation focused on Guatecompras vendors. Name may change later.",
-      "tags": ["investigation", "data", "guatemala", "provisional"],
-      "nextSteps": ["Define research question", "Clarify available data sources and first output"],
+      "updatedAt": "2026-04-02",
+      "summary": "A public tool for journalists to track and relate information from websites.",
+      "tags": ["tool", "public", "osint"],
+      "nextSteps": [
+        "Define the exact user workflow the tool should support first.",
+        "Choose the first website-tracking and relationship-mapping features for an MVP."
+      ],
       "blockers": [],
-      "stalledByLuis": true,
-      "stalledReason": "Needs sharper framing before project execution starts.",
+      "stalledByLuis": false,
+      "stalledReason": "",
       "activities": [
         {
-          "date": "2026-04-01",
-          "title": "Project added",
-          "note": "Added as a provisional investigation project; title expected to change later."
+          "date": "2026-04-02",
+          "title": "Planning baseline recorded",
+          "note": "Marked as planning; next-step clarity matters more than technical detail in the morning registry."
+        }
+      ]
+    },
+    {
+      "id": "pulso-digital",
+      "name": "pulso-digital",
+      "status": "active",
+      "semaphore": "green",
+      "updatedAt": "2026-04-02",
+      "summary": "A tailored theme for my newsletter in Ghost.",
+      "tags": ["theme", "public", "free"],
+      "nextSteps": [
+        "Verify where the theme is currently deployed and whether the public site is loading correctly.",
+        "Document pending design or template adjustments for the next revision."
+      ],
+      "blockers": [
+        "Current live deployment/usage still needs verification from a network check in this session."
+      ],
+      "stalledByLuis": false,
+      "stalledReason": "",
+      "activities": [
+        {
+          "date": "2026-04-02",
+          "title": "Morning status model applied",
+          "note": "Kept as active; this project should report deployment/use status as part of the morning registry."
         }
       ]
     }

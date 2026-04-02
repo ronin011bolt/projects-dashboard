@@ -51,6 +51,10 @@ Each project has:
 - `updatedAt`
 - `summary`
 - `tags[]`
+- `nextSteps[]`
+- `blockers[]`
+- `stalledByLuis`
+- `stalledReason`
 - `activities[]`
 
 ## Current limits
